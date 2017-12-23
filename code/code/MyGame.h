@@ -36,6 +36,7 @@ public:
 	STAR star;
 	int time_first;
 	int time_second;
+
 	Player player;
 	
 };

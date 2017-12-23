@@ -1,7 +1,6 @@
 #pragma once
 
 #include <windows.h>
-#include <list>
 #include "resource.h"
 #pragma comment (lib,"Msimg32.lib")
 using namespace std;

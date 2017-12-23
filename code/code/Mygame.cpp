@@ -6,12 +6,6 @@ IMPLEMENT(MygameApp)
 	dc = 0;            //  获取 窗口DC
 	hMemDC = 0;   //  创建一个 兼容性DC
 	hBitamp = 0; 
-	SetDROP fall = {"res\\angrybird.bmp",20,3,10,-0.2,0,300,0,0.20,40,true};
-	bird.Init(&fall);
-	SetFALL fall_snow = {"res\\snow.bmp",50,1000,0,300,10,0,40,true};
-	snow.Init(&fall_snow);
-	SetStar set_star = {"res\\star.bmp",0,0,1000,450,1000,450,40,20,100,40,true};
-	star.Init(&set_star);
 	time_first = 0;
 	time_second =0;
 }
@@ -33,7 +27,8 @@ unsigned __stdcall Show_thread( void * lp)
 		pthis->bird.Show(pthis->hMemDC);
 		pthis->snow.Show(pthis->hMemDC);
 		pthis->star.Show(pthis->hMemDC);
-		pthis->player.Show(pthis->hMemDC);
+		pthis->player.Show();
+
 		::BitBlt(pthis->dc,0,0,WINDOW_WEIGHT,WINDOW_HIGNT,pthis->hMemDC,0,0,SRCCOPY);  // 把 兼容性DC 拷贝到窗口上
 	}
 
@@ -50,9 +45,16 @@ void MygameApp::OnCreateGame()   // WM_CREATE
 	::SelectObject(hMemDC,hBitamp);
 	//  1.  初始化背景
 	back.BackInit(m_hIns);
-	player.Init(m_hIns);
-	//  2.  初始化玩家飞机
 
+	//  2.  初始化其他
+	SetDROP fall = {"res\\angrybird.bmp",20,3,10,-0.2,0,300,0,0.20,40,true};
+	bird.Init(&fall);
+	SetFALL fall_snow = {"res\\snow.bmp",50,1000,0,300,10,0,40,true};
+	snow.Init(&fall_snow);
+	SetStar set_star = {"res\\star.bmp",0,0,1000,450,1000,450,40,20,100,40,true};
+	star.Init(&set_star);
+	player.Init(hMemDC);
+	//show_player.Init(hMemDC,"res\\左跑2.bmp","res\\左跑3.bmp","res\\左跑4.bmp","res\\左跑5.bmp");
 	//  3.  启动定时器
 	::SetTimer(m_hMainWnd,BACK_MOVE_TIME_ID,50,NULL);   // 控制背景移动
 
