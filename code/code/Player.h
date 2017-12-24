@@ -40,11 +40,11 @@ public:
 
 	void Init(HDC hMemDC)
 	{
-		play_show.Init(hMemDC,"res\\player\\酘變2.bmp","res\\player\\酘變4.bmp","res\\player\\酘變5.bmp");
+		play_show.Init(hMemDC,100,"res\\player\\酘豪羲祥啖辦變2.bmp");
 	}
 	void Show()
 	{
-		play_show.show(this->x_pos,this->y_pos,50);
+		play_show.show(this->x_pos,this->y_pos,200);
 	}
 
 	//void SelectBitmap(HDC hTempDC)
