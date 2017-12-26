@@ -1,5 +1,6 @@
 #include "MyGame.h"
 
+ LoadRes  loadres;
 IMPLEMENT(MygameApp)
 	MygameApp::MygameApp(void) 
 {
@@ -8,6 +9,8 @@ IMPLEMENT(MygameApp)
 	hBitamp = 0; 
 	time_first = 0;
 	time_second =0;
+	loadres.Init();
+
 }
 
 MygameApp::~MygameApp(void)
@@ -27,11 +30,9 @@ unsigned __stdcall Show_thread( void * lp)
 		pthis->bird.Show(pthis->hMemDC);
 		pthis->snow.Show(pthis->hMemDC);
 		pthis->star.Show(pthis->hMemDC);
-		pthis->player.Show();
-
+		pthis->player.Show(pthis->hMemDC);
 		::BitBlt(pthis->dc,0,0,WINDOW_WEIGHT,WINDOW_HIGNT,pthis->hMemDC,0,0,SRCCOPY);  // °Ñ ¼æÈÝÐÔDC ¿½±´µ½´°¿ÚÉÏ
 	}
-
 	return 0;
 }
 void MygameApp::OnCreateGame()   // WM_CREATE
@@ -49,28 +50,27 @@ void MygameApp::OnCreateGame()   // WM_CREATE
 	//  2.  ³õÊ¼»¯ÆäËû
 	SetDROP fall = {"res\\angrybird.bmp",20,3,10,-0.2,0,300,0,0.20,40,true};
 	bird.Init(&fall);
-	SetFALL fall_snow = {"res\\snow.bmp",50,1000,0,300,10,0,40,true};
+	SetFALL fall_snow = {"res\\snow.bmp",1000,0,400,5,10,50,40,true};
 	snow.Init(&fall_snow);
 	SetStar set_star = {"res\\star.bmp",0,0,1000,450,1000,450,40,20,100,40,true};
 	star.Init(&set_star);
-	player.Init(hMemDC);
-	//show_player.Init(hMemDC,"res\\×óÅÜ2.bmp","res\\×óÅÜ3.bmp","res\\×óÅÜ4.bmp","res\\×óÅÜ5.bmp");
+	//player.Init(hMemDC);
 	//  3.  Æô¶¯¶¨Ê±Æ÷
-	::SetTimer(m_hMainWnd,BACK_MOVE_TIME_ID,50,NULL);   // ¿ØÖÆ±³¾°ÒÆ¶¯
-
+	::SetTimer(m_hMainWnd,BACK_MOVE_TIME_ID,50,NULL);   // ¿ØÖÆ±³¾°ÒÆ¶¯ 
+	ResumeThread(show_thread);
 
 }
-
-
 
 void MygameApp::OnGameDraw()     // WM_PAINT
 {
 	//------------------------------------------
-	ResumeThread(show_thread);
+
+		
+
+	
 	//------------------------------------------
 
 }
-
 void MygameApp::OnGameRun(WPARAM nTimerID)     // WM_TIMER
 {
 	if(nTimerID == BACK_MOVE_TIME_ID)
@@ -87,7 +87,7 @@ void MygameApp::OnGameRun(WPARAM nTimerID)     // WM_TIMER
 
 	if(nTimerID == BACK_MOVE_TIME_ID)  //  ±³¾°ÒÆ¶¯
 	{
-		back.BackMove();
+		back.BackMove(player.x_pos);
 	}
 	//  ÖØ»æ
 	this->OnGameDraw();
@@ -100,28 +100,16 @@ void MygameApp::OnKeyDown(WPARAM nKey)
 	}
 	if (nKey == 0x41)  //A¼ü
 	{
-		player.state = 2;
-		player.direct = 3;
-		player.x_pos -=5;
+		back.state = true;
+		player.x_pos -= PLAYER_SPEED;
+		player.ChangeState("×óÅÜ");
 	}
 	if (nKey == 0x44)  //D¼ü
 	{
-		player.state = 2;
-		player.direct = 4;
-		player.x_pos +=5;
+		if (player.x_pos <WINDOW_WEIGHT/2)player.x_pos +=PLAYER_SPEED;
+		player.ChangeState("ÓÒÅÜ");
+		back.state = true;
 	}
-	//if(::GetAsyncKeyState(0x44)& 0x8000)   //  ÅÐ¶Ï ¼üÅÌµÄ×´Ì¬
-	//{
-	//	time_first = GetTickCount();
-	//	while (true)
-	//	{
-
-	//	}
-	//	player.state = 2;
-	//	player.direct = 4;
-	//	player.x_pos ++;
-	//}
-
 	this->OnGameDraw();
 }
 
@@ -129,13 +117,13 @@ void MygameApp::OnKeyUp(WPARAM nKey)
 {
 	if (nKey == 0x44)  //D¼ü
 	{
-		player.state = 1;
-
+		back.state = false;
+		player.ChangeState("ÓÒÕ¾Á¢");
 	}
 	if (nKey == 0x41)  //A¼ü
 	{
-		player.state = 1;
-
+		back.state = true;
+		player.ChangeState("×óÕ¾Á¢");
 	}
 	this->OnGameDraw();
 }

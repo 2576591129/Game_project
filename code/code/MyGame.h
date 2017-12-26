@@ -1,9 +1,10 @@
 #pragma once
-#include <process.h>
 #include "cgamectrl.h"
 #include "Back.h"
 #include "Activity.h"
 #include "Player.h"
+
+
 class MygameApp :
 	public CGameCtrl
 {

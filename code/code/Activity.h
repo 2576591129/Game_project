@@ -2,40 +2,7 @@
 #include <iostream>
 #include <time.h>
 #pragma comment (lib,"Msimg32.lib")
-//用于临时存放指针地址空间的一个缓存区, WcharToChar 与 CharToWchar 都用到了,  用它的话函数可以直接返回字符数组, 不会导致内存泄漏等问题
-class BUFFER
-{
-public:
-	BUFFER(){pdelete = NULL;}
-	~BUFFER(){ Destory(nullptr);}
 
-	void Destory(void * temp)
-	{
-		if (!pdelete)
-			delete(pdelete);
-		pdelete = temp;
-	}
-private:
-	void * pdelete;
-};
-//定义一个全局的临时buff
-BUFFER Tempbuff;
-char *  WcharToChar(WCHAR* widestr)
-{
-	int num = WideCharToMultiByte(CP_OEMCP,NULL,widestr,-1,NULL,0,NULL,FALSE);
-	char *pchar = new char[num];
-	Tempbuff.Destory(pchar);
-	WideCharToMultiByte (CP_OEMCP,NULL,widestr,-1,pchar,num,NULL,FALSE);
-	return pchar;
-}
-LPCWSTR CharToWchar(char* ch)
-{
-	int num = MultiByteToWideChar(0,0,ch,-1,NULL,0);
-	wchar_t *wide = new wchar_t[num];
-	Tempbuff.Destory(wide);
-	MultiByteToWideChar(0,0,ch,-1,wide,num);
-	return wide;
-}
 
 //***********************************************物体下落(模拟重力以及摩擦力)动画**************************************//
 struct SetDROP  //来一个结构体, 用于设置动画的各种参数, 这个结构体是与用户的接口

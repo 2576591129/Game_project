@@ -1,7 +1,6 @@
 #pragma once
 #include "Sys.h"
 
-
 class CBack
 {
 public:
@@ -9,7 +8,7 @@ public:
 	HBITMAP m_hBmpBackUp;
 	int x;
 	int y;
-
+	bool state;				//标志位, 背景是否移动
 public:
 	CBack(void)
 	{
@@ -17,6 +16,7 @@ public:
 		m_hBmpBackUp = 0;
 		x = 0;
 		y = 0;
+		state = false; //背景不移动
 	}
 	~CBack(void)
 	{
@@ -31,11 +31,12 @@ public:
 	{
 		//  加载位图
 		m_hBmpBackUp =(HBITMAP)LoadImage(NULL,"res\\back1.bmp",IMAGE_BITMAP,3696,WINDOW_HIGNT,LR_LOADFROMFILE);//加载位图
-
+		m_hBmpBackDown=(HBITMAP)LoadImage(NULL,"res\\back1.bmp",IMAGE_BITMAP,3696,WINDOW_HIGNT,LR_LOADFROMFILE);//加载位图
 	}
-	void BackMove()
+	void BackMove(int player_x_pos)
 	{
-		/*x--;*/
+		if (player_x_pos >= WINDOW_WEIGHT/2 && state == true)x-=PLAYER_SPEED;	
+		if (x<=-3696)x=3696;
 	}
 	void BackShow(HDC hMemDC)
 	{
@@ -45,6 +46,9 @@ public:
 		::SelectObject(hTempDC,m_hBmpBackUp);
 		//  拷贝位图
 		::BitBlt(hMemDC,x,y,3696,WINDOW_HIGNT,hTempDC,0,0,SRCCOPY);
+
+		::SelectObject(hTempDC,m_hBmpBackDown);
+		::BitBlt(hMemDC,x+3696,y,3696,WINDOW_HIGNT,hTempDC,0,0,SRCCOPY);
 		//  选入一张位图
 		//  删除DC
 		::DeleteDC(hTempDC);
