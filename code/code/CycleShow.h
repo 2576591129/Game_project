@@ -1,8 +1,5 @@
+#pragma once
 #include "Sys.h"
-#include <vector>
-#include <string>
-#include<io.h> 
-#include <map>
 #define PICTURE_RES_PATH "res\\picture\\"
 #define SOUND_RES_PATH "res\\sound\\"
 
@@ -58,33 +55,54 @@ public:
 
 class CycleShow
 {
-	int show_id;
-	int time_first;
-	int time_second;		// 记录重绘的时间 , 这样就不用使用定时器
+	int show_id;				// 用来控制第几张图片显示用的, 在全局map的对象loadres中, 不同的键值有不同数量的位图, 需要用show_id进行控制
+	int time_first , time_second;// 记录重绘的时间 , 这样就不用使用定时器
+	int x,y;						//用来记录物体移动时的坐标
 public:
 	CycleShow()
 	{
+		x = 0 ;
+		y = 0;
 		show_id = 0;
 		time_first = 0;
-		time_second = 0;
+		time_second = 0;		
 	}
 	~CycleShow(){}
-	void show(HDC hMemDC,string key_value,int x_pos, int y_pos, int draw_time)
+
+	void show(HDC hMemDC,string key_value,int x_pos, int y_pos,int direct, int draw_time,bool flag_cycle ,bool auto_move = false ,int x_speed = 0, int y_speed = 0)
 	{
 		time_first = GetTickCount();	//记录重绘的时间
+		if ( x == 0 && y == 0 && auto_move == true)   // 需要自动移动功能
+		{
+			x = x_pos; 
+			y = y_pos;
+		}
+		if (auto_move == false) // 不需要自动移动  (虽然这两个if判断里面的语句时一样的, 但是绝对不能放一起, 因为循环的条件不一样
+		{
+			x = x_pos; 
+			y = y_pos;
+		}
 		HDC hTempDC = ::CreateCompatibleDC(hMemDC);
 		if(loadres.map_picture[key_value].size())//当加载的位图为空时, 并进行贴图, 防止访问空指针
 		{
-			if (show_id>=loadres.map_picture[key_value].size())show_id =0;	//这句必须判断, 否则, key_value改变时候, 相应的show_id没有还原, 将会访越界
+			if ((unsigned)show_id>=loadres.map_picture[key_value].size())show_id =0;	//这句必须判断, 否则, key_value改变时候, 相应的show_id没有还原, 将有可能会访越界
 			SelectObject(hTempDC,loadres.map_picture[key_value][show_id].bitmap);
-			TransparentBlt(hMemDC,x_pos,y_pos,loadres.map_picture[key_value][show_id].width,loadres.map_picture[key_value][show_id].height,hTempDC,0,0,loadres.map_picture[key_value][show_id].width,loadres.map_picture[key_value][show_id].height,RGB(0,0,0));
-			if (time_first - time_second > draw_time)
+			StretchBlt(hMemDC,x_pos + (direct-3)*loadres.map_picture[key_value][show_id].width/2,y_pos,(-direct+4)*loadres.map_picture[key_value][show_id].width,loadres.map_picture[key_value][show_id].height,hTempDC,0,0,loadres.map_picture[key_value][show_id].width,loadres.map_picture[key_value][show_id++].height,SRCAND);
+			SelectObject(hTempDC,loadres.map_picture[key_value][show_id].bitmap);
+			StretchBlt(hMemDC,x_pos + (direct-3)*loadres.map_picture[key_value][show_id].width/2,y_pos,(-direct+4)*loadres.map_picture[key_value][show_id].width,loadres.map_picture[key_value][show_id].height,hTempDC,0,0,loadres.map_picture[key_value][show_id].width,loadres.map_picture[key_value][show_id--].height,SRCPAINT);
+			if (time_first - time_second > draw_time) //判断是否达到时间
 			{
-				show_id++;
+				show_id +=2 ;
+				x+=x_speed;
+				y+=y_speed;
 				time_second = GetTickCount();//记录重绘的时间
 			}
 		}
-		if (show_id > loadres.map_picture[key_value].size()-1)show_id =0;	
+		if (show_id > loadres.map_picture[key_value].size()-1)   //循环周期到了, show_id从0再开始
+		{
+			if (flag_cycle )show_id =0;
+			else show_id -=2;
+		}	
 		DeleteDC(hTempDC);
 	}
 };

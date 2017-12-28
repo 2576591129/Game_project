@@ -1,6 +1,9 @@
 #include "MyGame.h"
 
- LoadRes  loadres;
+LoadRes  loadres;
+Building Game_building;
+Player player;
+CBack back;  //  ±³¾°
 IMPLEMENT(MygameApp)
 	MygameApp::MygameApp(void) 
 {
@@ -10,7 +13,6 @@ IMPLEMENT(MygameApp)
 	time_first = 0;
 	time_second =0;
 	loadres.Init();
-
 }
 
 MygameApp::~MygameApp(void)
@@ -18,7 +20,6 @@ MygameApp::~MygameApp(void)
 	::DeleteObject(hBitamp);
 	::DeleteDC(hMemDC);
 	::ReleaseDC(m_hMainWnd,dc);
-
 }
 
 unsigned __stdcall Show_thread( void * lp)
@@ -26,12 +27,15 @@ unsigned __stdcall Show_thread( void * lp)
 	MygameApp* pthis = (MygameApp*) lp;
 	while (true)
 	{
-		pthis->back.BackShow(pthis->hMemDC);
-		pthis->bird.Show(pthis->hMemDC);
+		pthis->time_first = GetTickCount();
+		if (pthis->time_first - pthis->time_second < 10 )continue;
+		back.BackShow(pthis->hMemDC);
+		/*pthis->bird.Show(pthis->hMemDC);
 		pthis->snow.Show(pthis->hMemDC);
-		pthis->star.Show(pthis->hMemDC);
-		pthis->player.Show(pthis->hMemDC);
+		pthis->star.Show(pthis->hMemDC);*/
+		player.Show(pthis->hMemDC);
 		::BitBlt(pthis->dc,0,0,WINDOW_WEIGHT,WINDOW_HIGNT,pthis->hMemDC,0,0,SRCCOPY);  // °Ñ ¼æÈÝÐÔDC ¿½±´µ½´°¿ÚÉÏ
+		pthis->time_second = GetTickCount();
 	}
 	return 0;
 }
@@ -45,8 +49,7 @@ void MygameApp::OnCreateGame()   // WM_CREATE
 	hBitamp = ::CreateCompatibleBitmap(dc,WINDOW_WEIGHT,WINDOW_HIGNT);   //  ´´½¨Î»Í¼   ºÍ ´°¿Údc ¼æÈÝµÄÍ¼Æ¬¿ÉÒÔ»­ÑÕÉ«
 	::SelectObject(hMemDC,hBitamp);
 	//  1.  ³õÊ¼»¯±³¾°
-	back.BackInit(m_hIns);
-
+	back.BackInit();
 	//  2.  ³õÊ¼»¯ÆäËû
 	SetDROP fall = {"res\\angrybird.bmp",20,3,10,-0.2,0,300,0,0.20,40,true};
 	bird.Init(&fall);
@@ -54,9 +57,8 @@ void MygameApp::OnCreateGame()   // WM_CREATE
 	snow.Init(&fall_snow);
 	SetStar set_star = {"res\\star.bmp",0,0,1000,450,1000,450,40,20,100,40,true};
 	star.Init(&set_star);
-	//player.Init(hMemDC);
-	//  3.  Æô¶¯¶¨Ê±Æ÷
-	::SetTimer(m_hMainWnd,BACK_MOVE_TIME_ID,50,NULL);   // ¿ØÖÆ±³¾°ÒÆ¶¯ 
+	Game_building.AddBuilding(1081,260,120,20,false);
+
 	ResumeThread(show_thread);
 
 }
@@ -64,67 +66,48 @@ void MygameApp::OnCreateGame()   // WM_CREATE
 void MygameApp::OnGameDraw()     // WM_PAINT
 {
 	//------------------------------------------
-
-		
-
-	
+	//this->back.BackShow(this->hMemDC);
+	//this->bird.Show(this->hMemDC);
+	//this->snow.Show(this->hMemDC);
+	//this->star.Show(this->hMemDC);
+	//this->player.Show(this->hMemDC);
+	//::BitBlt(this->dc,0,0,WINDOW_WEIGHT,WINDOW_HIGNT,this->hMemDC,0,0,SRCCOPY);  // °Ñ ¼æÈÝÐÔDC ¿½±´µ½´°¿ÚÉÏ
 	//------------------------------------------
 
 }
 void MygameApp::OnGameRun(WPARAM nTimerID)     // WM_TIMER
 {
-	if(nTimerID == BACK_MOVE_TIME_ID)
-	{
-		//if(::GetAsyncKeyState(VK_LEFT))   //  ÅÐ¶Ï ¼üÅÌµÄ×´Ì¬
 
-		//if(::GetAsyncKeyState(VK_RIGHT))   //  ÅÐ¶Ï ¼üÅÌµÄ×´Ì¬
-		//
-		//if(::GetAsyncKeyState(VK_UP))   //  ÅÐ¶Ï ¼üÅÌµÄ×´Ì¬
-
-		//if(::GetAsyncKeyState(VK_DOWN))   //  ÅÐ¶Ï ¼üÅÌµÄ×´Ì¬
-
-	}
-
-	if(nTimerID == BACK_MOVE_TIME_ID)  //  ±³¾°ÒÆ¶¯
-	{
-		back.BackMove(player.x_pos);
-	}
+	//if(nTimerID == BACK_MOVE_TIME_ID)back.BackMove();  //  ±³¾°ÒÆ¶¯
 	//  ÖØ»æ
 	this->OnGameDraw();
 }
 void MygameApp::OnKeyDown(WPARAM nKey)
 {
-	if (nKey == VK_ESCAPE)
+	switch (nKey)
 	{
-		::PostQuitMessage(NULL);
+	case 0x41: //A¼ü
+		player.Move(LEFT);
+		break;   
+	case 0x44: //D¼ü
+		player.Move(RIGHT);
+		break;  
+	case 0x53: player.Move(DOWN);break;  // S¼ü
+	case 0x4B: player.Move(JUMP,m_hMainWnd);break;  // K¼ü
+	case VK_ESCAPE :   ::PostQuitMessage(NULL);
 	}
-	if (nKey == 0x41)  //A¼ü
-	{
-		back.state = true;
-		player.x_pos -= PLAYER_SPEED;
-		player.ChangeState("×óÅÜ");
-	}
-	if (nKey == 0x44)  //D¼ü
-	{
-		if (player.x_pos <WINDOW_WEIGHT/2)player.x_pos +=PLAYER_SPEED;
-		player.ChangeState("ÓÒÅÜ");
-		back.state = true;
-	}
+	back.AdjustState(nKey);
 	this->OnGameDraw();
 }
 
 void MygameApp::OnKeyUp(WPARAM nKey)
 {
-	if (nKey == 0x44)  //D¼ü
+	switch (nKey)
 	{
-		back.state = false;
-		player.ChangeState("ÓÒÕ¾Á¢");
+		case 0x44:player.ChangeState("Õ¾Á¢");break; //D¼üÌ§Æð
+		case 0x41: player.ChangeState("Õ¾Á¢");break; //A¼üÌ§Æð
 	}
-	if (nKey == 0x41)  //A¼ü
-	{
-		back.state = true;
-		player.ChangeState("×óÕ¾Á¢");
-	}
+	back.AdjustState(nKey);
 	this->OnGameDraw();
 }
 

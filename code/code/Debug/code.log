@@ -1,0 +1,24 @@
+﻿生成启动时间为 2017/12/28/周四 20:58:11。
+     1>项目“C:\Users\Administrator\Desktop\code2\code\code.vcxproj”在节点 2 上(Build 个目标)。
+     1>ClCompile:
+         E:\vs2012\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Building.h Mygame.cpp
+         Mygame.cpp
+     1>c:\users\administrator\desktop\code2\code\cycleshow.h(101): warning C4018: “>”: 有符号/无符号不匹配
+     1>c:\users\administrator\desktop\code2\code\back.h(47): warning C4018: “<”: 有符号/无符号不匹配
+     1>c:\users\administrator\desktop\code2\code\player.h(70): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+     1>c:\users\administrator\desktop\code2\code\player.h(79): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+     1>c:\users\administrator\desktop\code2\code\mygame.cpp(54): warning C4305: “初始化”: 从“double”到“float”截断
+         正在生成代码...
+     1>c:\users\administrator\desktop\code2\code\building.h(48): warning C4715: “Building::IsObstacle”: 不是所有的控件路径都返回值
+         正在跳过...(未检测到相关更改)
+         Building.h
+       Link:
+         E:\vs2012\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Administrator\Desktop\code2\Debug\code.exe" /INCREMENTAL /NOLOGO dxerr.lib d3dcompiler.lib d3d11.lib d3dx11.lib dxguid.lib d3dx9d.lib d3dx10d.lib d3d9.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib winmm.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Administrator\Desktop\code2\Debug\code.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Administrator\Desktop\code2\Debug\code.lib" /MACHINE:X86 Debug\Building.obj
+         Debug\Mygame.obj
+         Debug\WinMain.obj
+         code.vcxproj -> C:\Users\Administrator\Desktop\code2\Debug\code.exe
+     1>已完成生成项目“C:\Users\Administrator\Desktop\code2\code\code.vcxproj”(Build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:05.03

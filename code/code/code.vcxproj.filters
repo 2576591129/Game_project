@@ -21,6 +21,9 @@
     <ClCompile Include="Mygame.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Building.h">
+      <Filter>头文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGameCtrl.h">

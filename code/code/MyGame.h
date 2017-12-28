@@ -4,7 +4,6 @@
 #include "Activity.h"
 #include "Player.h"
 
-
 class MygameApp :
 	public CGameCtrl
 {
@@ -13,7 +12,7 @@ public:
 	HDC hMemDC;   //  创建一个 兼容性DC
 	HBITMAP hBitamp;   //  创建位图   和 窗口dc 兼容的图片可以画颜色
 public:
-	CBack back;  //  背景
+	
 
 
 public:
@@ -31,14 +30,11 @@ public:
 
 public:
 	HANDLE show_thread;
-
 	DROP bird;
 	SNOWFALL snow;
 	STAR star;
 	int time_first;
 	int time_second;
-
-	Player player;
 	
 };
 

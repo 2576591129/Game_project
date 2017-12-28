@@ -1,22 +1,27 @@
 #pragma once
 #include "Sys.h"
+#include "CycleShow.h"
+#include "Building.h"
 
+extern Building Game_building;
 class CBack
 {
 public:
 	HBITMAP m_hBmpBackDown;   //  背景图片
 	HBITMAP m_hBmpBackUp;
-	int x;
-	int y;
+	CycleShow back_show;
+	int x_pos;
+	int y_pos;
 	bool state;				//标志位, 背景是否移动
+
 public:
 	CBack(void)
 	{
 		m_hBmpBackDown = 0;   //  背景图片
 		m_hBmpBackUp = 0;
-		x = 0;
-		y = 0;
-		state = false; //背景不移动
+		x_pos = 0;
+		y_pos = 0;
+		state = true; //背景不移动
 	}
 	~CBack(void)
 	{
@@ -27,31 +32,37 @@ public:
 	}
 
 public:
-	void BackInit(HINSTANCE hIns)
+	void BackInit()
 	{
 		//  加载位图
 		m_hBmpBackUp =(HBITMAP)LoadImage(NULL,"res\\back1.bmp",IMAGE_BITMAP,3696,WINDOW_HIGNT,LR_LOADFROMFILE);//加载位图
 		m_hBmpBackDown=(HBITMAP)LoadImage(NULL,"res\\back1.bmp",IMAGE_BITMAP,3696,WINDOW_HIGNT,LR_LOADFROMFILE);//加载位图
 	}
-	void BackMove(int player_x_pos)
+
+	//背景移动由玩家调用, 并且背景移动的时候, 全部的障碍物也需要移动
+	void Move()
 	{
-		if (player_x_pos >= WINDOW_WEIGHT/2 && state == true)x-=PLAYER_SPEED;	
-		if (x<=-3696)x=3696;
+		x_pos-=PLAYER_SPEED;	
+		if (x_pos<=-3696)x_pos=0; // 背景循环显示
+		for (int i = 0 ;i < Game_building.vct_building.size(); i ++) //遍历障碍物数组, 所有障碍物移动
+		{
+			Game_building.vct_building[i].x_pos -= PLAYER_SPEED ;
+		}
 	}
+
 	void BackShow(HDC hMemDC)
 	{
 		//  创建一个兼容性DC
 		HDC hTempDC = ::CreateCompatibleDC(hMemDC);
-		//  选入一张位图
 		::SelectObject(hTempDC,m_hBmpBackUp);
-		//  拷贝位图
-		::BitBlt(hMemDC,x,y,3696,WINDOW_HIGNT,hTempDC,0,0,SRCCOPY);
-
-		::SelectObject(hTempDC,m_hBmpBackDown);
-		::BitBlt(hMemDC,x+3696,y,3696,WINDOW_HIGNT,hTempDC,0,0,SRCCOPY);
-		//  选入一张位图
-		//  删除DC
+		::BitBlt(hMemDC,x_pos,y_pos,3696,WINDOW_HIGNT,hTempDC,0,0,SRCCOPY);
+		::SelectObject(hTempDC,m_hBmpBackDown);	
 		::DeleteDC(hTempDC);
+	}
+
+	void AdjustState(WPARAM nKey)
+	{
+
 	}
 };
 

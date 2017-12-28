@@ -1,24 +1,7 @@
-#include <windows.h>
-#include <iostream>
-#include <time.h>
-#pragma comment (lib,"Msimg32.lib")
+#include "Sys.h"
 
 
 //***********************************************物体下落(模拟重力以及摩擦力)动画**************************************//
-struct SetDROP  //来一个结构体, 用于设置动画的各种参数, 这个结构体是与用户的接口
-{
-	TCHAR * picture_path;							//图片的路径
-	float x_speed;											// X方向的初速度
-	float y_speed;											// Y方向的初速度
-	float G;														// 重力加速度
-	float  x_F;													// X方向的摩擦力
-	float  y_F;													// Y方向的摩擦力
-	int high;														//下落的高度
-	float x_begin_pos;									//下落的起始点x
-	float y_begin_pos;									//下落的起始点y
-	int drow_speed;										//重绘的速度(毫秒为单位)
-	bool repet;													//是否重复
-};
 class DROP
 {
 public:
@@ -100,22 +83,8 @@ public:
 	}
 };
 
-//****************************************************************************************************************//
-
-
 //******************************************************雪花动画*********************************************//
-struct SetFALL
-{
-	TCHAR* picture_path;							//图片的路径
-	int x_rand;												//需要随机的范围
-	float y_begin_pos;								//开始下落的y的坐标
-	float high;												//下落的高度
-	float speed;											//下落的速度
-	int swing	;											//左右摇摆的范围
-	int max_num;										//最大的数量
-	int drow_speed;									//重绘的速度(毫秒为单位)
-	bool repet;												//是否重复
-};
+
 class SNOWFALL
 {
 private:
@@ -212,21 +181,6 @@ private:
 
 
 //****************************************************星光绽放动画*******************************************//
-struct SetStar
-{
-	TCHAR* picture_path;							//图片的路径
-	float x_begin;										//初始绽放的位置,如果为0,将会再x_range与y_range中随机
-	float y_begin;
-	int x_range;											//初始绽放的范围
-	int y_range;
-	int x_max_range;									//物体活动的范围
-	int y_max_range;
-	int max_speed;										//物体飞行的最大速度
-	int exist_time;										//物体存在的时间
-	int max_num;										//物体的最大数量
-	int drow_time;										//重绘一次的时间(毫秒为单位)
-	bool repet;												//是否重复
-};
 class STAR		
 {
 	struct Star

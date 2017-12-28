@@ -76,6 +76,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Building.h" />
     <ClCompile Include="Mygame.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
