@@ -50,5 +50,8 @@
     <ClInclude Include="Sys.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Myqueue.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

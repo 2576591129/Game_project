@@ -14,13 +14,14 @@ class Building
 {
 public:
 	vector <BuildInfo> vct_building;
-
+	HBITMAP hbitmap;
+	int floor;
 public:
 	Building()
 	{
-
+		floor = 0;
 	}
-	~Building(){}
+	~Building(){DeleteObject(hbitmap);}
 
 public:
 	//添加一个新的障碍物到数组中
@@ -28,29 +29,26 @@ public:
 	{
 		BuildInfo new_build = {x,y,width,height,flag_pass};
 		vct_building.push_back(new_build);
+		hbitmap = (HBITMAP)LoadImage(NULL,"res\\angrybird.bmp",IMAGE_BITMAP,2*width,height,LR_LOADFROMFILE);//加载位图
 	}
 
-	//判断左方向或者右方向上是否有障碍物
-	bool IsObstacle(PLAYER_DIRECT direct , int x_pos, int y_pos) //这里规定传进来的坐标是需要判断的那个物体的右下角坐标, 例如玩家(假如方向为右), 这里就是玩家右脚下的坐标
+	void show(HDC hMemDC)
 	{
-		if (direct == RIGHT )
-		{
-			// 当障碍物的坐标大于玩家坐标, 并且玩家加上速度马上就要到达障碍物, 并且玩家右下角y的坐标比障碍物的y要底, 并且该障碍物不能被越过 , 则视为有障碍物
-			if (this->vct_building.front().x_pos > x_pos && x_pos + PLAYER_SPEED >= this->vct_building.front().x_pos && y_pos > this->vct_building.front().y_pos && this->vct_building.front().flag_pass == false) 
-				return true;
-			else
-				return false;
-		}
-		if (direct == LEFT)
-		{
-
-		}
+		HDC hTempDC = ::CreateCompatibleDC(hMemDC);
+		SelectObject(hTempDC,hbitmap);
+		BitBlt(hMemDC,vct_building.front().x_pos,vct_building.front().y_pos,vct_building.front().width,vct_building.front().height,hTempDC,vct_building.front().width,0,SRCAND);
+		BitBlt(hMemDC,vct_building.front().x_pos,vct_building.front().y_pos,vct_building.front().width,vct_building.front().height,hTempDC,0,0,SRCPAINT);
+		DeleteDC(hTempDC);
 	}
 
 	//障碍物超出视野范围之外则删除
 	void DeleteBuild(int player_x_pos)
 	{
-		
+
 	}
 
+	void ChangeFloorHight()
+	{
+
+	}
 };

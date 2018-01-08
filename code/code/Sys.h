@@ -14,19 +14,30 @@ using namespace std;
 
 #define WINDOW_WEIGHT 1000
 #define WINDOW_HIGNT		450
-#define PLAYER_SPEED 6
 
+
+#define PLAYER_HEIGHT 65
+#define PLAYER_WIDTH 65
+#define PLAYER_RUN_SPEED 6
+#define PLAYER_JUMP_SPEED 3
+
+
+
+#define RETREAT       0x41				//A键	
+#define FORWARD		0x44			//D键
+#define SQUAT			0x53			//S键
+#define JUMP				0x4B			// K键
 
 enum PLAYER_DIRECT
 {
-	UP = 1,
+	LEFT = -1,
+	RIGHT = 1,
+	UP ,
 	DOWN,
-	LEFT,
-	RIGHT=5,
-	JUMP = 6,
 };
 
 
+ 
 struct SetDROP  //来一个结构体, 用于设置动画的各种参数, 这个结构体是与用户的接口
 {
 	TCHAR * picture_path;							//图片的路径

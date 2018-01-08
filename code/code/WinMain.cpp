@@ -31,12 +31,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			pCtrl->OnCreateGame();
 		}
 		break;
-	case WM_PAINT:
+	/*case WM_PAINT:
 		if(pCtrl != NULL)
 		{
 			pCtrl->OnGameDraw();
 		}
-		break;
+		break;*/
 	case WM_TIMER:
 		if(pCtrl != NULL)
 		{
@@ -136,14 +136,34 @@ int CALLBACK WinMain(HINSTANCE hInstance,HINSTANCE hPreInstance, LPSTR pCmdLine,
 	::ShowWindow(hWnd,SW_SHOW);
 
 	//  5.   消息循环
-	MSG msg;
+	/*MSG msg;
 	while(::GetMessage(&msg,0,0,0))
 	{
 		//  翻译
 		::TranslateMessage(&msg);
 		//  分发
 		::DispatchMessage(&msg);
+	}*/
+
+
+	MSG msg = { 0 };				//定义并初始化msg
+	while( msg.message != WM_QUIT )		//使用while循环，如果消息不是WM_QUIT消息，就继续循环
+	{
+		if( PeekMessage( &msg, 0, 0, 0, PM_REMOVE ) )   //查看应用程序消息队列，有消息时将队列中的消息派发出去。
+		{
+			TranslateMessage( &msg );		//将虚拟键消息转换为字符消息
+			DispatchMessage( &msg );			//分发一个消息给窗口程序。
+		}
+		else
+		{
+			if(pCtrl != NULL)
+			{
+				pCtrl->OnGameDraw();
+			}
+		}
+
 	}
+
 
 		return 0;
 }
