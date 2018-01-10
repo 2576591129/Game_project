@@ -2,10 +2,10 @@
 #include "Sys.h"
 #define PICTURE_RES_PATH "res\\picture\\"
 #define SOUND_RES_PATH "res\\sound\\"
-
+class SoundLoad;
 class  LoadRes;
 extern LoadRes  loadres;
-
+extern SoundLoad sound_res;
 
 //加载图片资源类
 class  LoadRes
@@ -204,13 +204,11 @@ public:
 		ReadBmp() ;
 	}
 
-
-	//以下的函数基本功能实现了, 把它进行精简一下 
 	//传入的参数一个是当前坐标 , 一个是终点坐标(两点确定一条直线), 最后一个是返回值类型   0: 当前坐标距离障碍物的距离, 1: 障碍物的x坐标, 2: 障碍物的 y坐标 , 当返回值为-999 则没有障碍物或者参数传入有误
 	int GetObstaclePosition(float firX_pos, float firY_pos, float secX_pos, float secY_pos , int return_type = 0) 
 	{	
 		if ( firX_pos<0 || firY_pos <0 ||  secX_pos <0 || secY_pos <0 || firY_pos > WINDOW_HIGNT || secY_pos > WINDOW_HIGNT ) return -999;	//参数传入有误
-	
+
 		if ( secX_pos == firX_pos)
 		{
 			for ( float temp_y = firY_pos ; temp_y < secY_pos ; temp_y++)
@@ -231,17 +229,36 @@ public:
 		float K= (secY_pos - firY_pos)/(secX_pos - firX_pos);	//计算两点间的斜率 K
 		if (K== 0 )
 		{
-			for ( float temp_x = firX_pos ; temp_x < secX_pos ; temp_x++)
+			if(secX_pos > firX_pos)
 			{
-				if (GetColor((int)temp_x , (int ) firY_pos ))
+				for ( float temp_x = firX_pos ; temp_x < secX_pos ; temp_x++)
 				{
-					switch (return_type)
+					if (GetColor((int)temp_x , (int ) firY_pos ))
 					{
-					case 0 : return temp_x -  firX_pos;
-					case 1: return (int) temp_x;
-					case 2:  return (int )firY_pos;
-					default: return -999;
-					}			
+						switch (return_type)
+						{
+						case 0 : return temp_x -  firX_pos;
+						case 1: return (int) temp_x;
+						case 2:  return (int )firY_pos;
+						default: return -999;
+						}			
+					}
+				}
+			}
+			else
+			{
+				for ( float temp_x = firX_pos ; temp_x >= secX_pos ; temp_x--)
+				{
+					if (GetColor((int)temp_x , (int ) firY_pos ))
+					{
+						switch (return_type)
+						{
+						case 0 : return firX_pos - temp_x -10 ;
+						case 1: return (int) temp_x;
+						case 2:  return (int )firY_pos;
+						default: return -999;
+						}			
+					}
 				}
 			}
 			return -999;
@@ -269,6 +286,60 @@ public:
 
 };
 
+//声音加载
+class SoundLoad
+{
+public:
+	string sound_path;
+	string command;
+	string other_name;  
+	vector <string> vct_name; //保存起来, 关闭声音文件的时候使用
+public:
+	SoundLoad()
+	{
+		sound_path = SOUND_RES_PATH ;
+		sound_path= sound_path + "*.wav";
+	}
+	~SoundLoad(){CloseSound();}
+public:
+	void Init()
+	{
+		struct _finddata_t fileinfo;                          //文件信息的结构体 
+		long handle=_findfirst(sound_path.c_str(),&fileinfo);  //用于查找的句柄        //第一次查找 
+		if(-1==handle)return ; 
+		OpenSound(fileinfo.name);
+		while(!_findnext(handle,&fileinfo))OpenSound(fileinfo.name);     //循环查找其他符合的文件，知道找不到其他的为止 
+		_findclose(handle);    
+	}
+	void OpenSound(string file_name)
+	{
+		other_name = file_name.substr(0,strlen(file_name.c_str()) - 4);
+		vct_name.push_back(other_name);
+		file_name = SOUND_RES_PATH + file_name;
+		command =  "open " + file_name + " alias " + other_name;
+		mciSendString(command.c_str(), NULL, 0, NULL);
+	}
+
+	void CloseSound()
+	{
+		for (auto i:vct_name)
+		{
+			command = "close "+i ;
+			mciSendString(command.c_str(), NULL, 0, NULL);
+		}
+	}
 
 
+};
 
+void PlaySound(string sound_name)
+{
+	sound_res.command = "play " + sound_name + " FROM 0";
+	mciSendString(sound_res.command.c_str(), NULL, 0, NULL);
+}
+
+void Stop(string sound_name)
+{
+	sound_res.command = "stop " + sound_name;
+	mciSendString(sound_res.command.c_str(), NULL, 0, NULL);
+}

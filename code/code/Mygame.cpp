@@ -4,6 +4,8 @@ LoadRes  loadres;
 Building Game_building;
 Player player;
 CBack back;  //  ±³¾°
+SoundLoad sound_res;
+
 IMPLEMENT(MygameApp)
 	MygameApp::MygameApp(void) 
 {
@@ -58,10 +60,11 @@ void MygameApp::OnCreateGame()   // WM_CREATE
 	snow.Init(&fall_snow);
 	SetStar set_star = {"res\\star.bmp",0,0,1000,450,1000,450,40,20,100,40,true};
 	star.Init(&set_star);
-	Game_building.AddBuilding(1081,260,120,70,false );
+	sound_res.Init();
 
+
+	PlaySound("res\\sound\\Ö÷ÌâÇú1.wav",NULL, SND_LOOP | SND_ASYNC );
 	ResumeThread(show_thread);
-
 }
 
 void MygameApp::OnGameDraw()     // WM_PAINT

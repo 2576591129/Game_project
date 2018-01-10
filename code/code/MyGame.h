@@ -3,7 +3,6 @@
 #include "Back.h"
 #include "Activity.h"
 #include "Player.h"
-
 class MygameApp :
 	public CGameCtrl
 {

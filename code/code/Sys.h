@@ -16,17 +16,21 @@ using namespace std;
 #define WINDOW_HIGNT		450
 
 
-#define PLAYER_HEIGHT 65
-#define PLAYER_WIDTH 65
+
 #define PLAYER_RUN_SPEED 6
 #define PLAYER_JUMP_SPEED 3
 
-
+#define GUNNER_MOVE_SPEED 3
+#define GUNNER_MOVE_LENGTH 700
+#define PLAYER_ATTACK_POWER  2
 
 #define RETREAT       0x41				//A¼ü	
 #define FORWARD		0x44			//D¼ü
 #define SQUAT			0x53			//S¼ü
 #define JUMP				0x4B			// K¼ü
+#define SHOOT    0x4A					//J¼ü
+#define SEND_GUNNER       0x20     // ¿Õ¸ñ¼ü
+
 
 enum PLAYER_DIRECT
 {
